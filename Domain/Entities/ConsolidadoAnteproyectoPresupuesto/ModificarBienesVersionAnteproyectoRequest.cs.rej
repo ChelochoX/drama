@@ -1,0 +1,12 @@
+diff a/Domain/Entities/ConsolidadoAnteproyectoPresupuesto/ModificarBienesVersionAnteproyectoRequest.cs b/Domain/Entities/ConsolidadoAnteproyectoPresupuesto/ModificarBienesVersionAnteproyectoRequest.cs	(rejected hunks)
+@@ -5,8 +5,8 @@
+ public class ModificarBienesVersionAnteproyectoRequest
+ { 
+ 
+-    public string Cantidad { get; set; }
+-    public string ValorUnitario { get; set; }
++    public long Cantidad { get; set; }
++    public long ValorUnitario { get; set; }
+     public string UsuarioModificacion { get; set; }
+     public int CodigoAnteproyectoBien { get; set; }
+     public int CodigoAnteproyectoObjeto { get; set; }

@@ -1,0 +1,142 @@
+syntax = "proto3";
+
+option csharp_namespace = "WebApi.Protos";
+
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/any.proto";
+
+service ManejadorSesiones {
+	rpc VerificarToken (SolicitudVerificarToken) returns (google.protobuf.BoolValue);
+	rpc ObtenerSesion (SolicitudVerificarToken) returns (RespuestaDatosUsuario);
+	rpc AutenticarUsuario (CredencialesUsuario) returns (RespuestaAutenticacion);
+	rpc RenovarAutenticacionUsuario (ParTokens) returns (RespuestaAutenticacion);
+	rpc CerrarSesionUsuario (SolicitudVerificarToken) returns (RespuestaCerradoSesion);
+	rpc AutenticarServicio (CredencialesUsuario) returns (RespuestaAutenticacionServicio);
+	rpc ObtenerPermisosUsuario (CredencialesAcceso) returns (RespuestaObtenerPermisosUsuario);
+}
+
+message RespuestaObtenerPermisosUsuario{
+	repeated PermisosAplicacion aplicaciones = 1;
+}
+
+message PermisosAplicacion {
+	uint32 appId = 1;
+	string descripcion = 2;
+	repeated PermisoRol roles = 3;
+	repeated PermisoUsuario especiales = 4;
+}
+
+message PermisoUsuario{
+	Permiso permiso = 1;
+	repeated Circunscripcion circunscripciones = 4;
+}
+
+message PermisoRol {
+	uint32 rolId = 1;
+	string descripcion = 2;
+	repeated Permiso permisos = 3;
+	repeated Circunscripcion circunscripciones = 4;
+}
+
+message Permiso {
+	uint32 codigo = 1;
+	string descripcion = 2;
+}
+
+message CredencialesAcceso {
+	string token_acceso = 1;
+}
+
+message SolicitudVerificarToken {
+	string bearer_token = 1;
+}
+
+message CredencialesUsuario {
+	string usuario = 1;
+	string clave = 2;
+}
+
+message ParTokens {
+	string bearer_token = 1;
+	string refresh_token = 2;
+	google.protobuf.Timestamp timestamp_expiracion_utc = 3;
+}
+
+message ListaCircunscripciones {
+	repeated Circunscripcion circunscripciones =  1;
+}
+
+message Circunscripcion {
+	uint32 circunscripcion_id = 1;
+	string descripcion_circunscripcion = 2;
+}
+
+message Rol {
+	uint32 rol_id = 1;
+	string descripcion_rol = 2;
+	repeated Circunscripcion circunscripciones = 3;
+}
+
+message Aplicacion {
+	uint32 app_id = 1;
+	repeated Rol roles = 2;
+}
+
+message RespuestaDatosUsuario {
+	string nombre_usuario = 1;
+	string numero_documento = 2;
+	uint64 codigo_usuario = 3;
+	repeated Aplicacion aplicaciones = 4;
+	google.protobuf.Timestamp timestamp_expiracion_utc = 5;
+	google.protobuf.Timestamp timestamp_ingreso_utc = 6;
+	google.protobuf.Timestamp timestamp_refresco_utc = 7;
+	string sesion_id = 8;
+	repeated AtributoSesion atributos = 9;
+	repeated PermisosAplicacion PermisosAplicacion = 10;
+}
+
+message AtributoSesion {
+	string clave = 1;
+	optional string valor = 2;
+}
+
+message RespuestaAutenticacion {
+	ParTokens par_tokens = 1;
+	RespuestaDatosUsuario datos_usuario = 2;
+}
+
+message RespuestaAutenticacionServicio {
+	string token = 1;
+	uint32 timestamp_expiracion = 2;
+}
+
+message RespuestaCerradoSesion {
+	bool exito = 1;
+}
+
+message ClaveValor {
+	string clave = 1;
+	string valorStr = 2;
+}
+
+message Lista {
+	repeated ClaveValor valores = 1;
+}
+
+message SolicitudGuardarLista{
+	uint32 AppID = 1;
+	uint64 CodigoUsuario = 2;
+	Lista Lista = 3;
+}
+
+message RespuestaGuardarLista{
+	bool exito = 1;
+	string mensaje = 2;
+}
+
+message RespuestaObtenerLista{
+	bool exito = 1;
+	Lista Lista = 2;
+}
+
